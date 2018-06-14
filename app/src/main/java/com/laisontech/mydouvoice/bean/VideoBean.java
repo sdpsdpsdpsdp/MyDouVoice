@@ -5,10 +5,18 @@ package com.laisontech.mydouvoice.bean;
  */
 
 public class VideoBean {
-
+    private  int id;
     private String title;
     private String url;
     private String thumb;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -34,10 +42,16 @@ public class VideoBean {
         this.thumb = thumb;
     }
 
+    public VideoBean(String title, String thumb, String url,int id) {
+        this.title = title;
+        this.thumb = thumb;
+        this.url = url;
+        this.id = id;
+    }
+
     public VideoBean(String title, String thumb, String url) {
         this.title = title;
-        this.url = url;
         this.thumb = thumb;
-
+        this.url = url;
     }
 }

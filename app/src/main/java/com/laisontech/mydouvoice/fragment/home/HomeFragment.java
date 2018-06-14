@@ -36,7 +36,7 @@ import com.laisontech.mydouvoice.base.BaseFragment;
  * Created by SDP on 2018/6/14.
  */
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private ImageView ivCut;
     private TextView tvRecommend;
     private TextView tvNear;

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.laisontech.mydouvoice.DouYinController;
@@ -14,9 +15,14 @@ import com.laisontech.mydouvoice.R;
 import com.laisontech.mydouvoice.adapter.DouYinAdapter;
 import com.laisontech.mydouvoice.base.BaseFragment;
 import com.laisontech.mydouvoice.bean.VideoBean;
+import com.laisontech.mydouvoice.dbhelper.LikeButtonInfoDao;
 import com.laisontech.mydouvoice.utils.DataUtil;
 import com.laisontech.videoplayer.player.IVideoView;
 import com.laisontech.videoplayer.player.PlayerConfig;
+import com.laisontech.videoplayer.util.WindowUtil;
+import com.like.IconType;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +65,8 @@ public class RecommendFragment extends BaseFragment {
     private List<View> mViews = new ArrayList<>();
     private int mCurrentPosition;
     private int mPlayingPosition;
-
+    private LikeButton mLikeButton;
+    private LikeButtonInfoDao mDao;
 
     @Override
     protected int getResLayoutId() {
@@ -68,13 +75,17 @@ public class RecommendFragment extends BaseFragment {
 
     @Override
     protected void initViews(View view) {
+        mDao = new LikeButtonInfoDao(getContext());
+        mVideoList = DataUtil.getDouYinVideoList();
+
         mIjkVideoView = new IVideoView(getContext());
         PlayerConfig config = new PlayerConfig.Builder().setLooping().build();
         mIjkVideoView.setPlayerConfig(config);
         mDouYinController = new DouYinController(getContext());
         mIjkVideoView.setVideoController(mDouYinController);
         mVerticalViewPager = view.findViewById(R.id.vvp);
-        mVideoList = DataUtil.getDouYinVideoList();
+
+
     }
 
     @Override
@@ -93,8 +104,6 @@ public class RecommendFragment extends BaseFragment {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                Log.e(TAG, "mCurrentId == " + position + ", positionOffset == " + positionOffset +
-//                        ", positionOffsetPixels == " + positionOffsetPixels);
             }
 
             @Override
@@ -110,8 +119,8 @@ public class RecommendFragment extends BaseFragment {
                 if (state == VerticalViewPager.SCROLL_STATE_IDLE) {
                     mIjkVideoView.release();
                     ViewParent parent = mIjkVideoView.getParent();
-                    if (parent != null && parent instanceof FrameLayout) {
-                        ((FrameLayout) parent).removeView(mIjkVideoView);
+                    if (parent != null && parent instanceof RelativeLayout) {
+                        ((RelativeLayout) parent).removeView(mIjkVideoView);
                     }
                     startPlay();
                 }
@@ -123,14 +132,47 @@ public class RecommendFragment extends BaseFragment {
 
     private void startPlay() {
         View view = mViews.get(mCurrentPosition);
-        FrameLayout frameLayout = view.findViewById(R.id.container);
+        RelativeLayout relativeLayout = view.findViewById(R.id.container);
+        String url = mVideoList.get(mCurrentPosition).getUrl();
+        relativeLayout.addView(mIjkVideoView);
+        addLikeView(relativeLayout, mVideoList.get(mCurrentPosition).getId());
         ImageView imageView = view.findViewById(R.id.thumb);
-        mDouYinController.getThumb().setImageDrawable(imageView.getDrawable());
-        frameLayout.addView(mIjkVideoView);
-        mIjkVideoView.setUrl(mVideoList.get(mCurrentPosition).getUrl());
+        mDouYinController.getThumb().setImageDrawable(imageView.getDrawable());//设置封面
+        mIjkVideoView.setUrl(url);
         mIjkVideoView.setScreenScale(IVideoView.SCREEN_SCALE_CENTER_CROP);
         mIjkVideoView.start();
         mPlayingPosition = mCurrentPosition;
+    }
+
+    private void addLikeView(RelativeLayout rl, int id) {
+        if (mLikeButton != null) {
+            rl.removeView(mLikeButton);
+            mLikeButton = null;
+        }
+        mLikeButton = new LikeButton(getContext());
+        mLikeButton.setIconSizePx(WindowUtil.dp2px(getContext(), 40));
+        mLikeButton.setIcon(IconType.Heart);
+        mLikeButton.setLikeDrawable(getResources().getDrawable(R.drawable.icon_zan));
+        mLikeButton.setUnlikeDrawable(getResources().getDrawable(R.drawable.icon_cancel_zan));
+        boolean select = mDao.getLikeButtonSelect(id);
+        mLikeButton.setLiked(select);
+        mLikeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                mDao.saveLikeButtonSelect(id, true);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                mDao.saveLikeButtonSelect(id, false);
+            }
+        });
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(WindowUtil.dp2px(getContext(), 60)
+                , WindowUtil.dp2px(getContext(), 60));
+        lp.addRule(RelativeLayout.CENTER_VERTICAL);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_END);
+        rl.addView(mLikeButton, lp);
     }
 
     @Override

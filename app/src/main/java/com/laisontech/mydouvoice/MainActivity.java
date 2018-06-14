@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "DouYinActivity";
     private IVideoView mIjkVideoView;
     private DouYinController mDouYinController;
-    private VerticalViewPager mVerticalViewPager;
     private DouYinAdapter mDouYinAdapter;
     private List<VideoBean> mVideoList;
     private List<View> mViews = new ArrayList<>();
@@ -58,47 +57,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mDouYinAdapter = new DouYinAdapter(mViews);
-        mVerticalViewPager.setAdapter(mDouYinAdapter);
-
-        mVerticalViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                Log.e(TAG, "mCurrentId == " + position + ", positionOffset == " + positionOffset +
-//                        ", positionOffsetPixels == " + positionOffsetPixels);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.d(TAG, "position: " + position);
-                mCurrentPosition = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                Log.d(TAG, "onPageScrollStateChanged: " + state);
-                if (mPlayingPosition == mCurrentPosition) return;
-                if (state == VerticalViewPager.SCROLL_STATE_IDLE) {
-                    mIjkVideoView.release();
-                    ViewParent parent = mIjkVideoView.getParent();
-                    if (parent != null && parent instanceof FrameLayout) {
-                        ((FrameLayout) parent).removeView(mIjkVideoView);
-                    }
-                    startPlay();
-                }
-            }
-        });
-        //自动播放第一条
-        mVerticalViewPager.post(this::startPlay);
     }
 
     private void startPlay() {
         View view = mViews.get(mCurrentPosition);
-        FrameLayout frameLayout = view.findViewById(R.id.container);
         ImageView imageView = view.findViewById(R.id.thumb);
         mDouYinController.getThumb().setImageDrawable(imageView.getDrawable());
-        frameLayout.addView(mIjkVideoView);
         mIjkVideoView.setUrl(mVideoList.get(mCurrentPosition).getUrl());
         mIjkVideoView.setScreenScale(IVideoView.SCREEN_SCALE_CENTER_CROP);
         mIjkVideoView.start();
