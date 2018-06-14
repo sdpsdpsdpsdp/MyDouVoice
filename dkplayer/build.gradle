@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 26
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:26.1.0"
+    api "tv.danmaku.ijk.media:ijkplayer-java:0.8.8"
+    api 'com.danikula:videocache:2.7.0'
+}

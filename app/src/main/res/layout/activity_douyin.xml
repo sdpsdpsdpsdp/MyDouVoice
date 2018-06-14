@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tv="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBase"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center">
+
+        <com.laisontech.mydouvoice.customview.CustomerTextView
+            android:id="@+id/ctv_Home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tv:showBottomView="show"
+            tv:topText="@string/Home" />
+
+        <com.laisontech.mydouvoice.customview.CustomerTextView
+            android:id="@+id/ctv_Attention"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tv:showBottomView="hide"
+            tv:topText="@string/Attention" />
+
+        <FrameLayout
+            android:id="@+id/rl_add_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_add" />
+        </FrameLayout>
+
+        <com.laisontech.mydouvoice.customview.CustomerTextView
+            android:id="@+id/ctv_Message"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tv:showBottomView="hide"
+            tv:topText="@string/Message" />
+
+        <com.laisontech.mydouvoice.customview.CustomerTextView
+            android:id="@+id/ctv_Mine"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tv:showBottomView="hide"
+            tv:topText="@string/Mine" />
+    </LinearLayout>
+
+</LinearLayout>

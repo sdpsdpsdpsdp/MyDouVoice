@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomerTextView">
+        <attr name="topText" format="string" />
+        <attr name="showBottomView" format="enum">
+            <enum name="show" value="0" />
+            <enum name="hide" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
