@@ -94,7 +94,11 @@ public class RecommendFragment extends BaseFragment {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.item_douyin, null);
             ImageView imageView = view.findViewById(R.id.thumb);
             Glide.with(this).load(item.getThumb()).into(imageView);
+
+            LikeButton likeButton = view.findViewById(R.id.likeButton);
+            likeButton.setLiked(mDao.getLikeButtonSelect(item.getId()));
             mViews.add(view);
+
         }
 
         mDouYinAdapter = new DouYinAdapter(mViews);
